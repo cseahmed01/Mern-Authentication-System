@@ -10,10 +10,10 @@ const generateToken = (id) => {
 
 // @desc    Register user
 // @route   POST /api/auth/register
-// @access  Public
+// @access  Public (admin can set roles)
 const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Validation
     if (!name || !email || !password) {
@@ -34,11 +34,22 @@ const register = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    // Determine role: only admin can set roles, others default to 'user'
+    let userRole = 'user';
+    if (role && req.user && req.user.role === 'admin') {
+      // Validate role
+      if (!['user', 'moderator', 'admin'].includes(role)) {
+        return res.status(400).json({ message: 'Invalid role specified' });
+      }
+      userRole = role;
+    }
+
     // Create user
     const user = await User.create({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
+      role: userRole,
     });
 
     if (user) {
@@ -47,6 +58,7 @@ const register = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
       });
     } else {
       res.status(400).json({ message: 'Invalid user data' });
@@ -73,6 +85,7 @@ const login = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
       });
     } else {
       res.status(401).json({ message: 'Invalid credentials' });

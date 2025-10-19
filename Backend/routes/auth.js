@@ -5,13 +5,13 @@ const {
   getUser,
   logout,
 } = require('../controllers/authController');
-const auth = require('../middleware/auth');
+const { authenticate, adminOnly } = require('../middleware/auth');
 
 const router = express.Router();
 
-router.post('/register', register);
+router.post('/register', authenticate, register); // Require auth for registration to check admin role
 router.post('/login', login);
-router.get('/user', auth, getUser);
+router.get('/user', authenticate, getUser);
 router.post('/logout', logout);
 
 module.exports = router;
