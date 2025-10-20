@@ -13,9 +13,10 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
+app.use('/uploads', express.static('uploads'));
 
 // Database connection
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/mern-auth', {
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/authentication', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })

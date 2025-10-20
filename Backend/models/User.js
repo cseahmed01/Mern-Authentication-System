@@ -20,6 +20,18 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'moderator', 'admin'],
     default: 'user',
   },
+  phone: {
+    type: String,
+    required: false,
+  },
+  picture: {
+    type: String,
+    required: false,
+  },
+  bio: {
+    type: String,
+    required: false,
+  },
 }, {
   timestamps: true,
 });
